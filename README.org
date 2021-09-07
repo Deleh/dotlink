@@ -1,7 +1,7 @@
 * dotlink
 
   There are countless ways of managing your dotfiles.. this is also one.
-  After trying several approaches and switching between different setups, this method met finally all of my requirements:
+  After trying several approaches and switching between different setups, this method finally met all of my requirements:
 
   - As simple as possible
   - Multiple machines are managed in one repository
@@ -10,7 +10,7 @@
   - Set everything up with one command
   - Updating configurations shall require nothing more than =git pull=
 
-  This is a reference repository which contains a =setup= script and example dotfiles for two machines called =host1= and =host2=.
+  This is a reference repository which contains a =setup= bash script and some example dotfiles for two machines called =host1= and =host2=.
 
   *Warning*: If you want to try this make a backup of your dotfiles!
   The =setup= script doesn't overwrite existing files but you never know.
