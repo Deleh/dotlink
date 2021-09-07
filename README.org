@@ -17,7 +17,7 @@
 
 ** Concept
 
-  The concept is based on symlinks and two directories called =common= and =machines= and a =setup= bash script called.
+  The concept is based on symlinks and two directories called =common= and =machines= and a =setup= bash script.
 
   The =machines= directory contains subdirectories for all machines on which dotfiles are managed.
   They need to match the /hostname/ of the machine (in this repository =host1= and =host2=) and mimic the corresponding =$HOME= directories.
