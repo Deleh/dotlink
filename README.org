@@ -1,0 +1,67 @@
+* dotlink
+
+  There are countless ways of managing your dotfiles.. this is also one.
+  After trying several approaches and switching between different setups, this method met finally all of my requirements:
+
+  - As simple as possible
+  - Multiple machines are managed in one repository
+  - Identical configurations for one program on several machines only need to be adjusted in one place
+  - Different configurations for one program on several machines are no problem
+  - Set everything up with one command
+  - Updating configurations shall require nothing more than =git pull=
+
+  This is a reference repository which contains a =setup= script and example dotfiles for two machines called =host1= and =host2=.
+
+  *Warning*: If you want to try this make a backup of your dotfiles!
+  The =setup= script doesn't overwrite existing files but you never know.
+
+** Concept
+
+  The concept is based on symlinks and two directories called =common= and =machines= and a bash script called =setup=.
+  
+  The =machines= directory contains subdirectories for all machines on which dotfiles are managed.
+  They need to match the /hostname/ of the machine (in this repository =host1= and =host2=) and mimic the corresponding =$HOME= directories.
+
+  The =common= directory contains configs which are present on multiple machines.
+  It doesn't follow any specific structure, you can choose what suits your setup.
+  Subdirectories with program names, followed by the configuration files (in this repository only =mpv=) make probably the most sense but its up to you.
+  The =common= directory should never contain symlinks.
+
+  Symlinks from the =machines= directory to the =common= directory make the configs available on multiple machines and they can be adjusted in one place (see =mpv= in this repository).
+
+  Here is the tree output from this repository:
+
+  #+begin_example text
+    dotlink/
+    ├── common
+    │   └── mpv
+    │       ├── input.conf
+    │       └── mpv.conf
+    ├── machines
+    │   ├── host1
+    │   │   ├── .config
+    │   │   │   └── mpv -> ../../../common/mpv/
+    │   │   └── .offlineimaprc
+    │   └── host2
+    │       └── .config
+    │           ├── beets
+    │           │   └── config.yaml
+    │           └── mpv -> ../../../common/mpv/
+    └── setup
+  #+end_example
+
+  The *mpv* configuration is shared between hosts, =host1= has an *OfflineIMAP* configuration in his home directory and =host2= has a *beets* configuration in his =.config= directory.
+
+  When calling the =setup= script, all files from the directory which matches the current /hostname/ are linked to their destination in the =$HOME= directory.
+  Calling the script is only neccessary when new files are added.
+  If you updated a configuration somewhere else just call =git pull= and thats it.
+
+** Adding configuration files for multiple host
+
+   It is important that the links from the =machines= directory to the =common= directory are relative.
+   Follow these steps to add new configurations for multiple machines:
+   
+   1. Add the files to the =common= directory
+   2. Execute =ln -rs common/<config_or_directory> machines/<hostname>/<path_in_home>= for every machine on which the files should be present
+   3. Call the =setup= script on every modified machine
+  

@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+
+# Text formatting variables
+text_bold="\e[1m"
+text_red="\e[31m"
+text_reset="\e[0m"
+text_yellow="\e[33m"
+
+# Output functions
+function log {
+    echo -ne "$1\n"
+}
+
+function warning {
+    echo -ne "${text_bold}${text_yellow}WARNING${text_reset} $1\n"
+}
+
+function error {
+    echo -ne "${text_bold}${text_red}ERROR${text_reset} $1\n"
+}
+
+# Get current dotfile directory for later linking
+dotfiles="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+# Check if dotfiles for machine exist
+if [ ! -d "$dotfiles/machines/$HOSTNAME" ]; then
+    error "No dotfiles for machine $text_bold$HOSTNAME$text_reset found"
+    exit 1
+fi
+
+# Get dotfiles for current machine
+cd "$dotfiles/machines/$HOSTNAME"
+files=( $(find -L -type f -printf '%P\n'))
+
+log "Linking $text_bold${#files[@]}$text_reset files..\n"
+
+# Link files
+for file in "${files[@]}"; do
+    
+    # Check if target is a link
+    if [ -L "$HOME/$file" ]; then
+
+        if [ "$(readlink $HOME/$file)" != "$dotfiles/machines/$HOSTNAME/$file" ]; then
+            warning "$text_bold$HOME/$file$text_reset is a link but doesn't point to this repository, it will not be linked"
+            continue
+        fi
+
+    # Check if target is a file or directory
+    elif [ -f "$HOME/$file" ]; then
+
+        warning "$text_bold$HOME/$file$text_reset exists and will not be linked"
+        continue
+
+    # Create link
+    else
+
+        # Create target directory if not existent
+        mkdir -p "$(dirname $HOME/$file)"
+
+        # Link file
+        ln -s "$dotfiles/machines/$HOSTNAME/$file" "$HOME/$file"
+        log "Linked $text_bold$dotfiles/$file$text_reset to $text_bold$HOME/$file$text_reset"
+
+    fi
+
+done
+
+log "\ndone"
