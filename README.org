@@ -17,8 +17,8 @@
 
 ** Concept
 
-  The concept is based on symlinks and two directories called =common= and =machines= and a bash script called =setup=.
-  
+  The concept is based on symlinks and two directories called =common= and =machines= and a =setup= bash script called.
+
   The =machines= directory contains subdirectories for all machines on which dotfiles are managed.
   They need to match the /hostname/ of the machine (in this repository =host1= and =host2=) and mimic the corresponding =$HOME= directories.
 
@@ -60,8 +60,7 @@
 
    It is important that the links from the =machines= directory to the =common= directory are relative.
    Follow these steps to add new configurations for multiple machines:
-   
+
    1. Add the files to the =common= directory
    2. Execute =ln -rs common/<config_or_directory> machines/<hostname>/<path_in_home>= for every machine on which the files should be present
    3. Call the =setup= script on every modified machine
-  
