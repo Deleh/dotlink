@@ -10,14 +10,14 @@
   - Set everything up with one command
   - Updating configurations shall require nothing more than =git pull=
 
-  This is a reference repository which contains a bash script and some example dotfiles for two machines called =host1= and =host2=.
+  This is a reference repository which contains a bash script (=dotlink=) and some example dotfiles for two machines (=host1= and =host2=).
 
   *Warning*: If you want to try this make a backup of your dotfiles!
   The script doesn't overwrite existing files but you never know.
 
 ** Concept
 
-  The concept is based on symlinks and two directories called =common= and =machines= and a bash script called =dotlink=.
+  The concept is based on symlinks and two directories, =common= and =machines=).
 
   The =machines= directory contains subdirectories for all machines on which dotfiles are managed.
   They need to match the /hostname/ of the machine (in this repository =host1= and =host2=) and mimic the corresponding =$HOME= directories.
@@ -52,15 +52,38 @@
 
   The *mpv* configuration is shared between hosts, =host1= has an *OfflineIMAP* configuration in his home directory and =host2= has a *beets* configuration in his =.config= directory.
 
-  When calling the =dotlink= script, all files from the directory which matches the current /hostname/ are linked to their destination in the =$HOME= directory.
-  Calling the script is only neccessary when new files are added.
+  Every file from every =machines/<hostname>= directory can then be linked to the corresponding path into the home directory of the machine.
+  This can be done by hand or with help of the =dotlink= script.
+
   If you updated a configuration somewhere else just call =git pull= and thats it.
+
+** Script usage
+
+   When calling the =dotlink= script, all files from the =machines/<hostname>= directory, which matches the current /hostname/, are linked to their destination in the =$HOME= directory.
+   Calling the script is only neccessary when new files were added which are not linked yet.
+
+   The script can be executed from everywhere, it is just important that it's stored next to a =machines= directory like in this repository.
+
+   #+begin_example text
+     Usage: dotlink [OPTIONS]
+
+     Simple dotfile management based on symlinks.
+
+     OPTIONS
+       -h, --help    Show this help message
+       -u, --unlink  Remove current links
+   #+end_example
+
+** Adding configuration files for only one host
+
+   Add the files to =machines/<hostname>/<path_in_home>=.
+   If you want to keep all configuration files in the =common= directory and just use symlinks in the =machines= directory, you can follow the instructions below.
 
 ** Adding configuration files for multiple host
 
    It is important that the links from the =machines= directory to the =common= directory are relative.
    Follow these steps to add new configurations for multiple machines:
 
-   1. Add the files to the =common= directory
+   1. Add the files somewhere to the =common= directory
    2. Execute =ln -rs common/<config_or_directory> machines/<hostname>/<path_in_home>= for every machine on which the files should be present
    3. Execute the =dotlink= script on every modified machine
