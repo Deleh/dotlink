@@ -59,7 +59,7 @@
 
 ** Script usage
 
-   When executing the =dotlink= script, all files from the =machines/<hostname>= directory, which matches the current /hostname/, are linked to their destination in the =$HOME= directory.
+   When the =dotlink= script is executed, all files from the =machines/<hostname>= directory, which matches the current /hostname/, are linked to their destination in the =$HOME= directory.
    Executing the script is only neccessary when new files were added which are not linked yet.
 
    The script can be executed from everywhere, it is just important that it's stored next to a =machines= directory like in this repository.
