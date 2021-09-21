@@ -31,7 +31,7 @@
 
   Here is the tree output from this repository:
 
-  #+begin_example text
+  #+begin_example
     dotlink/
     ├── common
     │   └── mpv
@@ -64,7 +64,7 @@
 
    The script can be executed from everywhere, it is just important that it's stored next to a =machines= directory like in this repository.
 
-   #+begin_example text
+   #+begin_example
      Usage: dotlink [OPTIONS]
 
      Simple dotfile management based on symlinks.
