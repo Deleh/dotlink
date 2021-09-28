@@ -1,6 +1,6 @@
 * dotlink
 
-  There are countless ways of managing your dotfiles.. this is also one.
+  There are countless ways of managing your dotfiles.. this is one of them.
   After trying several approaches and switching between different setups, this method finally met all of my requirements:
 
   - As simple as possible
