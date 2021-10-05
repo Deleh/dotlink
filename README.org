@@ -74,12 +74,12 @@
        -u, --unlink  Remove current links
    #+end_example
 
-** Adding configuration files for only one host
+** Add configuration files for only one host
 
    Add the files to =machines/<hostname>/<path_in_home>=.
    If you want to keep all configuration files in the =common= directory and just use symlinks in the =machines= directory, you can follow the instructions below.
 
-** Adding configuration files for multiple host
+** Add configuration files for multiple hosts
 
    It is important that the links from the =machines= directory to the =common= directory are relative.
    Follow these steps to add new configurations for multiple machines:
