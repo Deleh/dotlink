@@ -60,8 +60,7 @@ dotfiles="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 # Check if dotfiles for machine exist
 if [ ! -d "$dotfiles/machines/$HOSTNAME" ]; then
-    error "No dotfiles for machine $text_bold$HOSTNAME$text_reset found"
-    exit 1
+    error "No dotfiles for machine $text_bold$HOSTNAME$text_reset found, make sure the directory $text_bold$dotfiles/machines/$HOSTNAME$text_reset exists"
 fi
 
 # Get dotfiles for current machine
