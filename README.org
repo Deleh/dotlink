@@ -67,7 +67,7 @@
    #+begin_example
      Usage: dotlink [OPTIONS]
 
-     Simple dotfile management based on symlinks.
+     Link all files from hosts/$HOSTNAME to $HOME.
 
      OPTIONS
        -h, --help    Show this help message
