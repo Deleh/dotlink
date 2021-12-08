@@ -58,13 +58,13 @@ done
 # Get current dotfile directory for later linking
 dotfiles="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-# Check if dotfiles for machine exist
-if [ ! -d "$dotfiles/machines/$HOSTNAME" ]; then
-    error "No dotfiles for machine $text_bold$HOSTNAME$text_reset found, make sure the directory $text_bold$dotfiles/machines/$HOSTNAME$text_reset exists"
+# Check if dotfiles for host exist
+if [ ! -d "$dotfiles/hosts/$HOSTNAME" ]; then
+    error "No dotfiles for host $text_bold$HOSTNAME$text_reset found, make sure the directory $text_bold$dotfiles/hosts/$HOSTNAME$text_reset exists"
 fi
 
-# Get dotfiles for current machine
-cd "$dotfiles/machines/$HOSTNAME"
+# Get dotfiles for current host
+cd "$dotfiles/hosts/$HOSTNAME"
 files=( $(find -L -type f -printf '%P\n'))
 
 if [ "$unlink" == true ]; then
@@ -78,7 +78,7 @@ for file in "${files[@]}"; do
     # Unlink files
     if [ "$unlink" == true ]; then
 
-        if [ -L "$HOME/$file" ] && [ "$(readlink $HOME/$file)" == "$dotfiles/machines/$HOSTNAME/$file" ]; then
+        if [ -L "$HOME/$file" ] && [ "$(readlink $HOME/$file)" == "$dotfiles/hosts/$HOSTNAME/$file" ]; then
 
             rm "$HOME/$file"
             log "Unlinked $text_bold$HOME/$file$text_reset"
@@ -96,7 +96,7 @@ for file in "${files[@]}"; do
         # Check if target is a link
         if [ -L "$HOME/$file" ]; then
 
-            if [ "$(readlink $HOME/$file)" != "$dotfiles/machines/$HOSTNAME/$file" ]; then
+            if [ "$(readlink $HOME/$file)" != "$dotfiles/hosts/$HOSTNAME/$file" ]; then
                 warning "$text_bold$HOME/$file$text_reset is a link but doesn't point to this repository, it will not be linked"
                 continue
             fi
@@ -114,7 +114,7 @@ for file in "${files[@]}"; do
             mkdir -p "$(dirname $HOME/$file)"
 
             # Link file
-            ln -s "$dotfiles/machines/$HOSTNAME/$file" "$HOME/$file"
+            ln -s "$dotfiles/hosts/$HOSTNAME/$file" "$HOME/$file"
             log "Linked $text_bold$dotfiles/$file$text_reset to $text_bold$HOME/$file$text_reset"
         fi
     fi
