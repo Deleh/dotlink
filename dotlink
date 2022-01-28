@@ -27,7 +27,7 @@ Usage: dotlink [OPTIONS]
 Link all files from hosts/\$HOSTNAME to \$HOME.
 
 OPTIONS
-  -h, --help    Show this help message
+  -h, --help    Show this help message and exit
   -u, --unlink  Remove current links
 EOF
     exit
@@ -46,7 +46,7 @@ while (( "$#" )); do
             unlink=true
             shift
             ;;
-        -*|--*=)
+        -*)
             error "Unsupported flag: $1"
             ;;
         *)
@@ -56,37 +56,39 @@ while (( "$#" )); do
 done
 
 # Get current dotfile directory for later linking
-dotfiles="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+dotfiles="$(dirname "$(realpath "$0")")"
 
 # Check if dotfiles for host exist
-if [ ! -d "$dotfiles/hosts/$HOSTNAME" ]; then
-    error "No dotfiles for host $text_bold$HOSTNAME$text_reset found, make sure the directory $text_bold$dotfiles/hosts/$HOSTNAME$text_reset exists"
+if [ ! -d "${dotfiles}/hosts/${HOSTNAME}" ]; then
+    error "No dotfiles for host ${text_bold}${HOSTNAME}${text_reset} found, make sure the directory ${text_bold}${dotfiles}/hosts/${HOSTNAME}${text_reset} exists"
 fi
 
 # Get dotfiles for current host
-cd "$dotfiles/hosts/$HOSTNAME"
-files=( $(find -L -type f -printf '%P\n'))
+mapfile -t files < <(find -L "${dotfiles}/hosts/${HOSTNAME}" -type f -printf '%P\n')
 
 if [ "$unlink" == true ]; then
-    log "Unlinking $text_bold${#files[@]}$text_reset files..\n"
+    log "Unlinking ${text_bold}${#files[@]}${text_reset} files..\n"
 else
-    log "Linking $text_bold${#files[@]}$text_reset files..\n"
+    log "Linking ${text_bold}${#files[@]}${text_reset} files..\n"
 fi
 
 for file in "${files[@]}"; do
 
+    src="${dotfiles}/hosts/${HOSTNAME}/${file}"
+    trgt="${HOME}/${file}"
+
     # Unlink files
     if [ "$unlink" == true ]; then
 
-        if [ -L "$HOME/$file" ] && [ "$(readlink $HOME/$file)" == "$dotfiles/hosts/$HOSTNAME/$file" ]; then
+        if [ -L "$trgt" ] && [ "$(readlink "$trgt")" == "$src" ]; then
 
-            rm "$HOME/$file"
-            log "Unlinked $text_bold$HOME/$file$text_reset"
+            rm "$trgt"
+            log "Unlinked ${text_bold}${trgt}${text_reset}"
 
-            # Remove base directory if empty
-            if ! [ "$(ls -A $(dirname $HOME/$file))" ]; then
-                rmdir "$(dirname $HOME/$file)"
-                log "Removed empty directory $text_bold$(dirname $HOME/$file)$text_reset"
+            # Remove target directory if empty
+            if ! [ "$(ls -A "$(dirname "$trgt")")" ]; then
+                rmdir "$(dirname "$trgt")"
+                log "Removed empty directory ${text_bold}$(dirname "$trgt")${text_reset}"
             fi
         fi
 
@@ -94,28 +96,28 @@ for file in "${files[@]}"; do
     else
 
         # Check if target is a link
-        if [ -L "$HOME/$file" ]; then
+        if [ -L "$trgt" ]; then
 
-            if [ "$(readlink $HOME/$file)" != "$dotfiles/hosts/$HOSTNAME/$file" ]; then
-                warning "$text_bold$HOME/$file$text_reset is a link but doesn't point to this repository, it will not be linked"
+            if [ "$(readlink "$trgt")" != "$src" ]; then
+                warning "${text_bold}${trgt}${text_reset} is a link but doesn't point to this repository, it will not be linked"
                 continue
             fi
 
         # Check if target is a file or directory
-        elif [ -f "$HOME/$file" ]; then
+        elif [ -f "$trgt" ]; then
 
-            warning "$text_bold$HOME/$file$text_reset exists and will not be linked"
+            warning "${text_bold}${trgt}${text_reset} exists and will not be linked"
             continue
 
         # Create link
         else
 
             # Create target directory if not existent
-            mkdir -p "$(dirname $HOME/$file)"
+            mkdir -p "$(dirname "$trgt")"
 
             # Link file
-            ln -s "$dotfiles/hosts/$HOSTNAME/$file" "$HOME/$file"
-            log "Linked $text_bold$dotfiles/$file$text_reset to $text_bold$HOME/$file$text_reset"
+            ln -s "$src" "$trgt"
+            log "Linked ${text_bold}${src}${text_reset} to ${text_bold}${trgt}${text_reset}"
         fi
     fi
 
