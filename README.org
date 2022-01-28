@@ -70,7 +70,7 @@
      Link all files from hosts/$HOSTNAME to $HOME.
 
      OPTIONS
-       -h, --help    Show this help message
+       -h, --help    Show this help message and exit
        -u, --unlink  Remove current links
    #+end_example
 
