@@ -76,7 +76,7 @@
 
 ** Add configuration files for only one host
 
-   Add the files to =hosts/<hostname>/<path_in_home>=.
+   Add the files to =hosts/<hostname>/<path_in_home>= and execute the =dotlink= script on the modified host.
    If you want to keep all configuration files in the =common= directory and just use symlinks in the =hosts= directory, you can follow the instructions below.
 
 ** Add configuration files for multiple hosts
