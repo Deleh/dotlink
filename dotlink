@@ -55,16 +55,20 @@ while (( "$#" )); do
     esac
 done
 
+# Get hostname of this machine and filter out hostnames of subdomains like .local
+hostname="$(hostname)"
+hostname="${hostname%%.*}"
+
 # Get current dotfile directory for later linking
 dotfiles="$(dirname "$(realpath "$0")")"
 
 # Check if dotfiles for host exist
-if [ ! -d "${dotfiles}/hosts/${HOSTNAME}" ]; then
-    error "No dotfiles for host ${text_bold}${HOSTNAME}${text_reset} found, make sure the directory ${text_bold}${dotfiles}/hosts/${HOSTNAME}${text_reset} exists"
+if [ ! -d "${dotfiles}/hosts/${hostname}" ]; then
+    error "No dotfiles for host ${text_bold}${hostname}${text_reset} found, make sure the directory ${text_bold}${dotfiles}/hosts/${hostname}${text_reset} exists"
 fi
 
 # Get dotfiles for current host
-mapfile -t files < <(find -L "${dotfiles}/hosts/${HOSTNAME}" -type f -printf '%P\n')
+mapfile -t files < <(find -L "${dotfiles}/hosts/${hostname}" -type f -printf '%P\n')
 
 if [ "$unlink" == true ]; then
     log "Unlinking ${text_bold}${#files[@]}${text_reset} files..\n"
@@ -74,7 +78,7 @@ fi
 
 for file in "${files[@]}"; do
 
-    src="${dotfiles}/hosts/${HOSTNAME}/${file}"
+    src="${dotfiles}/hosts/${hostname}/${file}"
     trgt="${HOME}/${file}"
 
     # Unlink files
